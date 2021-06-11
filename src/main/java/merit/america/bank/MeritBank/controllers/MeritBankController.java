@@ -20,9 +20,9 @@ public class MeritBankController {
 	}
 	
 	@RequestMapping("/cdos")
-	public static List <CDOffering> getAllCdos(){
+	public static CDOffering[] getAllCdos(){
 		
-		return MeritBank.getCDOffering();
+		return MeritBank.getCDOfferings();
 	}
 	
 	@PostMapping(value = "/cdo")

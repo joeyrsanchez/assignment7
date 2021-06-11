@@ -1,4 +1,4 @@
-package merit.america.bank.MeritBankApp;
+package merit.america.bank.MeritBank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
