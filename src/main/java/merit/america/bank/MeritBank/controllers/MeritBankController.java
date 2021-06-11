@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import merit.america.bank.MeritBank.models.CDOfferings;
+import merit.america.bank.MeritBank.models.CDOffering;
 import merit.america.bank.MeritBank.models.MeritBank;
 import org.springframework.http.HttpStatus;
 
@@ -16,21 +16,20 @@ public class MeritBankController {
 
 	@RequestMapping("/greet")
 	public String greetMe() { 
-		return "<html><ht>Hello Humans. Welcome to Springboot</h1></html>";
-
+		return "<html><h1>Hello Humans. Welcome to Spring framework</h1></html>";
 	}
 	
 	@RequestMapping("/cdos")
-	public static List <CDOfferings> getAllCdos(){
+	public static List <CDOffering> getAllCdos(){
 		
-		return MeritBank.getCDOfferings();
+		return MeritBank.getCDOffering();
 	}
 	
 	@PostMapping(value = "/cdo")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CDOfferings addCDO(@RequestBody @Valid CDOfferings cdo) {
+	public CDOffering addCDO(@RequestBody @Valid CDOffering cdo) {
 		MeritBank.addCDO(cdo);
 		return cdo;
 		
-	}
+	} 
 }
