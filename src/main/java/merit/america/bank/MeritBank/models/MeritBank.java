@@ -299,4 +299,13 @@ public class MeritBank {
 
 		return total;
 	}
+	
+	public static void addCDO(CDOffering cdOffering) {
+		CDOffering[] tmp = new CDOffering[cdOfferings.length+1];
+		for(int i = 0; i < cdOfferings.length; i++) {
+			tmp[i] = cdOfferings[i];
+		}
+		tmp[cdOfferings.length] = cdOffering;
+		MeritBank.cdOfferings = tmp;
+	}
 }
