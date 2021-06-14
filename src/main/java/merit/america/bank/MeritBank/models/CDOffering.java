@@ -10,7 +10,9 @@ public class CDOffering {
 	@Min (value = 1)
 	private int term;
 	private long id;
-
+	
+	CDOffering() {}
+	
 	public CDOffering(int term, double interestRate) {
 		this.term = term;
 		this.interestRate = interestRate;

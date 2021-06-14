@@ -1,12 +1,5 @@
 package merit.america.bank.MeritBank.models;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -24,9 +17,6 @@ public class MeritBank {
 	public static CDOffering[] cdOfferings = new CDOffering[0];
 	public static CDOffering offering;
 
-	private static FraudQueue fraudQ = new FraudQueue();
-
-	private static ArrayList<String> fraudQueueStrings = new ArrayList<>();
 
 	public static double recursivePower(double base, int exponent) {
 		if (exponent == 0)
@@ -40,170 +30,12 @@ public class MeritBank {
 		return amount * recursivePower((1 + interestRate), years);
 	}
 
-
-	public static boolean processTransaction(Transaction transaction)
-			throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException {
-		transaction.process();
-		return true;
-	}
-
-	public static FraudQueue getFraudQueue() {
-		return fraudQ;
-	}
-
 	public static BankAccount getBankAccount(long accountID) // i. Return null if account not found
 	{
 		if (accounts.containsKey(accountID))
 			return accounts.get(accountID);
 
 		return null;
-	}
-
-
-
-	static boolean readFromFile(String fileName) {
-		accountHolders = new AccountHolder[1];
-		cdOfferings = new CDOffering[0];
-		try (BufferedReader rd = new BufferedReader(new FileReader(fileName))) {
-			MeritBank.setNextAccountNumber(Long.parseLong(rd.readLine()));
-
-// Read CDOffers
-			int numOfCDOfferings = Integer.parseInt(rd.readLine());
-			int n = 0;
-			cdOfferings = new CDOffering[numOfCDOfferings];
-
-			while (numOfCDOfferings > 0) {
-				cdOfferings[n] = CDOffering.readFromString(rd.readLine());
-				n++;
-				numOfCDOfferings--;
-			}
-
-//Read Account Holders
-			int numOfAccountHolders = Integer.parseInt(rd.readLine());
-			AccountHolder ah;
-			while (numOfAccountHolders > 0) {
-				ah = AccountHolder.readFromString(rd.readLine());
-				addAccountHolder(ah);
-				readCheckingAccounts(rd, ah);
-				readSavingsAccounts(rd, ah);
-				readCDAccounts(rd, ah);
-				numOfAccountHolders--;
-			} // Read Account Holders
-
-			// Fraud:
-			byte ts = Byte.parseByte(rd.readLine());
-			for (byte b = 0; b < ts; b++)
-				fraudQueueStrings.add(rd.readLine());
-
-			rd.close();
-
-//			for( AccountHolder ah0: accountHolders )
-//				for( CheckingAccount ca: ah0.getCheckingAccounts() )
-//					ca.process();
-
-			sortAccountHolders();
-
-			System.out.println(AccountHolder.writeToString());
-
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		} // catch
-	}// readFromFile
-
-	private static void readCDAccounts(BufferedReader rd, AccountHolder ac) throws IOException {
-		int transactionCount;
-		int numOfCDAcc = Integer.parseInt(rd.readLine());
-		CDAccount cda;
-		while (numOfCDAcc > 0) {
-			cda = CDAccount.readFromString(rd.readLine());
-			ac.addCDAccount(cda);
-			transactionCount = Integer.parseInt(rd.readLine());
-			for (int t = 0; t < transactionCount; t++)
-				cda.transactionStringAdd(rd.readLine());
-
-			numOfCDAcc--;
-		}
-	}
-
-	private static void readSavingsAccounts(BufferedReader rd, AccountHolder ac) throws IOException, ParseException {
-		int transactionCount;
-		int numOfSaveAcc = Integer.parseInt(rd.readLine());
-		SavingsAccount sa;
-		while (numOfSaveAcc > 0) {
-			sa = SavingsAccount.readFromString(rd.readLine());
-			try {
-				ac.addSavingsAccount(sa);
-			} catch (ExceedsCombinedBalanceLimitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NegativeAmountException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// savings transactions:
-			transactionCount = Integer.parseInt(rd.readLine());
-			for (int t = 0; t < transactionCount; t++)
-				sa.transactionStringAdd(rd.readLine());
-
-			numOfSaveAcc--;
-		}
-	}
-
-	private static void readCheckingAccounts(BufferedReader rd, AccountHolder ac) throws IOException, ParseException {
-		int transactionCount;
-		int numOfCheckAcc = Integer.parseInt(rd.readLine());
-		CheckingAccount ca;
-		while (numOfCheckAcc > 0) {
-			ca = CheckingAccount.readFromString(rd.readLine());
-			try {
-				ac.addCheckingAccount(ca);
-			} catch (ExceedsCombinedBalanceLimitException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NegativeAmountException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			accounts.put(ca.getAccountNumber(), ca);
-			// read checking account transactions:
-			transactionCount = Integer.parseInt(rd.readLine());
-			for (int t = 0; t < transactionCount; t++)
-				ca.transactionStringAdd(rd.readLine());
-
-			numOfCheckAcc--;
-		}
-	}
-
-//b. static boolean writeToFile(String fileName)
-//i. Should also write BankAccount transactions and the FraudQueue
-// Write DATABASE to FILE
-	static boolean writeToFile(String fileName) {
-		String outp = getNextAccountNumber() + "\n";
-
-		for (int i = 0; i < cdOfferings.length; i++)
-			if (cdOfferings[i] != null)
-				outp += cdOfferings[i].toString();
-
-		outp += accountHolders.length + "\n";
-		for (int i = 0; i < accountHolders.length; i++)
-			if (accountHolders[i] != null)
-				outp += accountHolders[i].toStringForFile();
-
-		System.out.println(outp);
-		PrintWriter out;
-		try {
-			out = new PrintWriter(fileName);
-			out.println(outp);
-			out.close();
-			return true;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	static AccountHolder[] sortAccountHolders() {

@@ -1,27 +1,11 @@
 package merit.america.bank.MeritBank.controllers;
 
 import javax.validation.Valid;
-import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.IntegerDeserializer;
-
-import merit.america.bank.MeritBank.models.AccountHolder;
-import merit.america.bank.MeritBank.models.CDAccount;
-import merit.america.bank.MeritBank.models.CheckingAccount;
-import merit.america.bank.MeritBank.models.ExceedsCombinedBalanceLimitException;
-import merit.america.bank.MeritBank.models.ExceedsFraudSuspicionLimitException;
-import merit.america.bank.MeritBank.models.MeritBank;
-import merit.america.bank.MeritBank.models.NegativeAmountException;
-import merit.america.bank.MeritBank.models.SavingsAccount;
-import merit.america.bank.MeritBank.models.CDOffering;
+import merit.america.bank.MeritBank.models.*;
 
 import org.springframework.http.HttpStatus;
 
@@ -65,9 +49,7 @@ public class AccountHolderController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		try {
 			checkingAccount = holder.addCheckingAccount(checkingAccount.getBalance());
-		} catch (NegativeAmountException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insuffecient Funds");
-		}catch (ExceedsCombinedBalanceLimitException e) {
+		} catch (ExceedsCombinedBalanceLimitException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount Exceeds Combined Balance Limit");
 		} 
 		
@@ -90,8 +72,6 @@ public class AccountHolderController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		try {
 			savingsAccount = holder.addSavingsAccount(savingsAccount.getBalance());
-		} catch (NegativeAmountException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insuffecient Funds");
 		}catch (ExceedsCombinedBalanceLimitException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount Exceeds Combined Balance Limit");
 		} 
@@ -109,25 +89,20 @@ public class AccountHolderController {
 	
 	@PostMapping(value = "/AccountHolders/{id}/CDAccounts")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CDAccount addAccountHolderCDAccounts(@PathVariable("id")long id, @RequestBody @Valid CDAccount cdAccount) {
+	public CDAccount addAccountHolderCDAccounts(@PathVariable("id")long id, @RequestBody @Valid CDAccountHelper cdAccountHelper) {
 		
-		
-		CDOffering cdo = MeritBank.getCDOffering(cdAccount.getCdOffering().getId());
-		
+		CDOffering cdo = MeritBank.getCDOffering(cdAccountHelper.getCdOffering().getID());
+		if (cdo == null)
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid CDOffering");
 		
 		AccountHolder holder = MeritBank.getAccountHolder(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
-		try {
-			cdAccount = new CDAccount(cdo, cdAccount.getBalance());
-			cdAccount = holder.addCDAccount(cdAccount);
-			return cdAccount;
-		} catch (ExceedsFraudSuspicionLimitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
 		
-		return null;
+		CDAccount cdAccount = new CDAccount(cdo, cdAccountHelper.getBalance());
+		cdAccount = holder.addCDAccount(cdAccount);
+		return cdAccount;
+
 	}
 	
 	

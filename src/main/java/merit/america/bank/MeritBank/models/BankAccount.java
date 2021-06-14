@@ -1,66 +1,45 @@
 package merit.america.bank.MeritBank.models;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public abstract class BankAccount extends Transaction {
+public abstract class BankAccount {
 	
 	//Instance Variables
-	private double interestRate;
+	@Min(value = 0)
+	@Max(value = 1)
+	private double interestRate = 0;
 	private long accountNumber;
 	@Min(value = 0)
 	private double balance;
-	private CDOffering offering;
-	private Date openingDate;
-	private ArrayList< String > transactionStrings = new ArrayList<>();
-	private ArrayList< Transaction > transactions = new ArrayList<>();
-
-	//Default Constructor
-	public BankAccount(){}
-
-	public BankAccount(long accountNumber){
-		setAccountNumber( accountNumber );
-	}
-
-	public BankAccount(double balance){
-		setBalance( balance );
-	}
-
-	public BankAccount(CDOffering offering, double balance){
-		this( balance );
-		setOffering( offering );
-	}
-
+	private Date openingDate = new Date();
+	
+	public BankAccount() {}
+	
 	public BankAccount(double balance, double interestRate){
-		this( balance );
+		this.balance = balance;
+		accountNumber = MeritBank.getNextAccountNumber();
 		setInterestRate( interestRate );
 	}
 
 	public BankAccount(long accountNumber, double balance, double interestRate){
-		this( balance, interestRate );
-		setAccountNumber( accountNumber );
-	}
-
-	public BankAccount(double balance, double interestRate, Date accountOpenedOn){
-		this( balance, interestRate );
-		setOpeningDate( accountOpenedOn );
+		this.accountNumber = accountNumber;
+		this.balance = balance;
+		this.interestRate = interestRate;
 	}
 
 	//Getter and Setter Methods
 	public void setInterestRate(double interestRate){this.interestRate = interestRate;}
-	public Date getOpeningDate(){return openingDate;}
-	public void setOpeningDate(Date openDate){this.openingDate = openDate;}
+	public long getOpenedOn(){return openingDate.getTime();}
+	public void setOpenedOn(Date openDate){this.openingDate = openDate;}
 	public void setAccountNumber(long accountNumber){this.accountNumber = accountNumber;}
-	public void setBalance(double balance){this.balance = balance;}
-	public CDOffering getOffering(){return offering;}
-	public void setOffering(CDOffering offering){this.offering = offering;}
-
-	public void transactionStringAdd(String s){
-		transactionStrings.add( s );
+	
+	public void setBalance(double balance) {
+		this.balance = balance;
 	}
+
 
 	//Get accountnumber, balance, and interestrate
 	public long getAccountNumber(){return accountNumber;}
@@ -96,15 +75,4 @@ public abstract class BankAccount extends Transaction {
 		return MeritBank.recursiveFutureValue( getBalance(), years, getInterestRate() );
 	}
 
-	public void addTransaction(Transaction transaction){
-		transactions.add( transaction );
-	}
-
-	public List< Transaction > getTransactions(){
-		return transactions;
-	}
-
-	public ArrayList< String > getTransactionStrings(){
-		return transactionStrings;
-	}
 }

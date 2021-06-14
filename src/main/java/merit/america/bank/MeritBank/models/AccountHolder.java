@@ -124,38 +124,23 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		return ssn;
 	}
 
-	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, NegativeAmountException {
+	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException {
 		CheckingAccount checkingAccount = new CheckingAccount(openingBalance);
 
 		return addCheckingAccount(checkingAccount);
 	}
 
-	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount)
-			throws ExceedsCombinedBalanceLimitException, NegativeAmountException {
-		if (checkingAccount.getBalance()<0)
-			throw new NegativeAmountException();
-		if (getCombinedBalance() + checkingAccount.getBalance() > MeritBank.COMBINED_BALANCE_MAX)
-			throw new ExceedsCombinedBalanceLimitException();
-		else {
-			for (int i = 0; i < checkingAccounts.length; i++) {
-				if (checkingAccounts[i] == null) {
-					checkingAccounts[i] = checkingAccount;
-
-					// Extending Array if full
-					if (i == checkingAccounts.length - 1) {
-						CheckingAccount[] temp = new CheckingAccount[checkingAccounts.length * 2];
-						for (int j = 0; j < checkingAccounts.length; j++)
-							temp[j] = checkingAccounts[j];
-
-						checkingAccounts = temp;
-					}
-
-					break;
-				}
+	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException {
+		if (checkingAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<MeritBank.COMBINED_BALANCE_MAX && checkingAccount!=null) {
+			CheckingAccount[] tmp = new CheckingAccount[checkingAccounts.length+1];
+			for (int i = 0; i<checkingAccounts.length; i++) {
+				tmp[i] = checkingAccounts[i];
 			}
-
+			tmp[checkingAccounts.length] = checkingAccount;
+			checkingAccounts = tmp;
 			return checkingAccount;
 		}
+		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
 	public CheckingAccount[] getCheckingAccounts() {
@@ -180,38 +165,24 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	}
 
 	public SavingsAccount addSavingsAccount(double openingBalance) 
-			throws ExceedsCombinedBalanceLimitException, NegativeAmountException {
+			throws ExceedsCombinedBalanceLimitException {
 		
 		SavingsAccount savingsAccount = new SavingsAccount(openingBalance);
 
 		return addSavingsAccount(savingsAccount);
 	}
 
-	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount)
-			throws ExceedsCombinedBalanceLimitException, NegativeAmountException
-
-	{
-		if (getCombinedBalance() + savingsAccount.getBalance() < MeritBank.COMBINED_BALANCE_MAX) {
-			for (int i = 0; i < savingAccounts.length; i++) {
-				if (savingAccounts[i] == null) {
-					savingAccounts[i] = savingsAccount;
-
-					// Extending Array if full
-					if (i == savingAccounts.length - 1) {
-						SavingsAccount[] temp = new SavingsAccount[savingAccounts.length * 2];
-						for (int j = 0; j < savingAccounts.length; j++) {
-							temp[j] = savingAccounts[j];
-						}
-						savingAccounts = temp;
-					}
-
-					break;
-				}
+	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException {
+		if (savingsAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<MeritBank.COMBINED_BALANCE_MAX && savingsAccount!=null) {
+			SavingsAccount[] tmp = new SavingsAccount[savingAccounts.length+1];
+			for (int i = 0; i<savingAccounts.length; i++) {
+				tmp[i] = savingAccounts[i];
 			}
-
+			tmp[savingAccounts.length] = savingsAccount;
+			savingAccounts = tmp;
 			return savingsAccount;
-		} else
-			return null;
+		}
+		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
 	public SavingsAccount[] getSavingsAccounts() {
@@ -239,23 +210,12 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	}
 
 	public CDAccount addCDAccount(CDAccount cdAccount) {
-		for (int i = 0; i < cdArray.length; i++) {
-			if (cdArray[i] == null) {
-				cdArray[i] = cdAccount;
-
-				// Extending Array if full
-				if (i == cdArray.length - 1) {
-					CDAccount[] temp = new CDAccount[cdArray.length * 2];
-					for (int j = 0; j < cdArray.length; j++) {
-						temp[j] = cdArray[j];
-					}
-					cdArray = temp;
-				}
-
-				break;
-			}
+		CDAccount[] tmp = new CDAccount[cdArray.length+1];
+		for (int i = 0; i<cdArray.length; i++) {
+			tmp[i] = cdArray[i];
 		}
-
+		tmp[cdArray.length] = cdAccount;
+		cdArray = tmp;
 		return cdAccount;
 	}
 
