@@ -1,8 +1,15 @@
 package merit.america.bank.MeritBank.models;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 public class CDOffering {
+	@Min (value = 0)
+	@Max (value = 1)
 	private double interestRate;
+	@Min (value = 1)
 	private int term;
+	private long id;
 
 	public CDOffering(int term, double interestRate) {
 		this.term = term;
@@ -45,5 +52,13 @@ public class CDOffering {
 		String info = getTerm() + "," + getInterestRate() + "\n";
 
 		return info;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 }

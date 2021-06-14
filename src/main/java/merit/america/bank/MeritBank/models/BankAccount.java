@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.Min;
+
 public abstract class BankAccount extends Transaction {
 	
 	//Instance Variables
 	private double interestRate;
 	private long accountNumber;
+	@Min(value = 0)
 	private double balance;
 	private CDOffering offering;
 	private Date openingDate;

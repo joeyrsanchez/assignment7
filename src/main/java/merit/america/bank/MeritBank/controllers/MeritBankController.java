@@ -1,6 +1,5 @@
 package merit.america.bank.MeritBank.controllers;
 
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,13 +18,13 @@ public class MeritBankController {
 		return "<html><h1>Hello Humans. Welcome to Spring framework</h1></html>";
 	}
 	
-	@RequestMapping("/cdos")
+	@RequestMapping("/CDOfferings")
 	public static CDOffering[] getAllCdos(){
 		
 		return MeritBank.getCDOfferings();
 	}
 	
-	@PostMapping(value = "/cdo")
+	@PostMapping(value = "/CDOfferings")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CDOffering addCDO(@RequestBody @Valid CDOffering cdo) {
 		MeritBank.addCDO(cdo);

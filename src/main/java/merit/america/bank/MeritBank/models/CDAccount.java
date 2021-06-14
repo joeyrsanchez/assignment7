@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class CDAccount extends BankAccount {
 	private int term;
-
+	private CDOffering cdOffering;
 	public CDAccount (CDOffering offering, double balance) 
 			throws ExceedsFraudSuspicionLimitException {
 		this.setOffering( offering );
@@ -115,5 +115,9 @@ public class CDAccount extends BankAccount {
 	@Override public void process() throws NegativeAmountException, ExceedsAvailableBalanceException, 
 	ExceedsFraudSuspicionLimitException{
 		// TODO Auto-generated method stub
+	}
+
+	public CDOffering getCdOffering() {
+		return cdOffering;
 	}
 }

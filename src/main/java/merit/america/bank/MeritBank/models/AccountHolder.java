@@ -1,13 +1,19 @@
 package merit.america.bank.MeritBank.models;
 
+import javax.validation.constraints.NotBlank;
+
 public class AccountHolder implements Comparable<AccountHolder> {
+	@NotBlank
 	private String firstName;
 	private String middleName;
+	@NotBlank
 	private String lastName;
+	@NotBlank
 	private String ssn;
-	private CheckingAccount[] checkArray = new CheckingAccount[1];
-	private SavingsAccount[] saveArray = new SavingsAccount[1];
-	private CDAccount[] cdArray = new CDAccount[1];
+	private long id;
+	private CheckingAccount[] checkingAccounts = new CheckingAccount[0];
+	private SavingsAccount[] savingAccounts = new SavingsAccount[0];
+	private CDAccount[] cdArray = new CDAccount[0];
 
 	// Constructors
 
@@ -84,7 +90,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		this.firstName = firstName;
 	}
 
-	protected String getFirstName() {
+	public String getFirstName() {
 		return firstName;
 	}
 
@@ -94,7 +100,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		this.middleName = middleName;
 	}
 
-	protected String getMiddleName() {
+	public String getMiddleName() {
 		return middleName;
 	}
 
@@ -104,7 +110,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		this.lastName = lastName;
 	}
 
-	protected String getLastName() {
+	public String getLastName() {
 		return lastName;
 	}
 
@@ -114,32 +120,34 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		this.ssn = ssn;
 	}
 
-	protected String getSSN() {
+	public String getSSN() {
 		return ssn;
 	}
 
-	protected CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException {
+	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, NegativeAmountException {
 		CheckingAccount checkingAccount = new CheckingAccount(openingBalance);
 
 		return addCheckingAccount(checkingAccount);
 	}
 
-	protected CheckingAccount addCheckingAccount(CheckingAccount checkingAccount)
-			throws ExceedsCombinedBalanceLimitException {
+	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount)
+			throws ExceedsCombinedBalanceLimitException, NegativeAmountException {
+		if (checkingAccount.getBalance()<0)
+			throw new NegativeAmountException();
 		if (getCombinedBalance() + checkingAccount.getBalance() > MeritBank.COMBINED_BALANCE_MAX)
 			throw new ExceedsCombinedBalanceLimitException();
 		else {
-			for (int i = 0; i < checkArray.length; i++) {
-				if (checkArray[i] == null) {
-					checkArray[i] = checkingAccount;
+			for (int i = 0; i < checkingAccounts.length; i++) {
+				if (checkingAccounts[i] == null) {
+					checkingAccounts[i] = checkingAccount;
 
 					// Extending Array if full
-					if (i == checkArray.length - 1) {
-						CheckingAccount[] temp = new CheckingAccount[checkArray.length * 2];
-						for (int j = 0; j < checkArray.length; j++)
-							temp[j] = checkArray[j];
+					if (i == checkingAccounts.length - 1) {
+						CheckingAccount[] temp = new CheckingAccount[checkingAccounts.length * 2];
+						for (int j = 0; j < checkingAccounts.length; j++)
+							temp[j] = checkingAccounts[j];
 
-						checkArray = temp;
+						checkingAccounts = temp;
 					}
 
 					break;
@@ -150,23 +158,19 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		}
 	}
 
-	protected CheckingAccount[] getCheckingAccounts() {
-		return checkArray;
+	public CheckingAccount[] getCheckingAccounts() {
+		return checkingAccounts;
 	}
 
-	protected int getNumberOfCheckingAccounts() {
-		int i = 0;
-		while (checkArray[i] != null) {
-			i++;
-		}
-		return i;
+	public int getNumberOfCheckingAccounts() {
+		return checkingAccounts.length;
 	}
 
-	protected double getCheckingBalance() {
+	public double getCheckingBalance() {
 		double chBalance = 0.0;
-		for (int i = 0; i < checkArray.length; i++) {
-			if (checkArray[i] != null)
-				chBalance += checkArray[i].getBalance();
+		for (int i = 0; i < checkingAccounts.length; i++) {
+			if (checkingAccounts[i] != null)
+				chBalance += checkingAccounts[i].getBalance();
 			else
 				break;
 		}
@@ -175,30 +179,30 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	}
 
-	protected SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException
-
-	{
+	public SavingsAccount addSavingsAccount(double openingBalance) 
+			throws ExceedsCombinedBalanceLimitException, NegativeAmountException {
+		
 		SavingsAccount savingsAccount = new SavingsAccount(openingBalance);
 
 		return addSavingsAccount(savingsAccount);
 	}
 
-	protected SavingsAccount addSavingsAccount(SavingsAccount savingsAccount)
-			throws ExceedsCombinedBalanceLimitException
+	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount)
+			throws ExceedsCombinedBalanceLimitException, NegativeAmountException
 
 	{
 		if (getCombinedBalance() + savingsAccount.getBalance() < MeritBank.COMBINED_BALANCE_MAX) {
-			for (int i = 0; i < saveArray.length; i++) {
-				if (saveArray[i] == null) {
-					saveArray[i] = savingsAccount;
+			for (int i = 0; i < savingAccounts.length; i++) {
+				if (savingAccounts[i] == null) {
+					savingAccounts[i] = savingsAccount;
 
 					// Extending Array if full
-					if (i == saveArray.length - 1) {
-						SavingsAccount[] temp = new SavingsAccount[saveArray.length * 2];
-						for (int j = 0; j < saveArray.length; j++) {
-							temp[j] = saveArray[j];
+					if (i == savingAccounts.length - 1) {
+						SavingsAccount[] temp = new SavingsAccount[savingAccounts.length * 2];
+						for (int j = 0; j < savingAccounts.length; j++) {
+							temp[j] = savingAccounts[j];
 						}
-						saveArray = temp;
+						savingAccounts = temp;
 					}
 
 					break;
@@ -210,36 +214,31 @@ public class AccountHolder implements Comparable<AccountHolder> {
 			return null;
 	}
 
-	protected SavingsAccount[] getSavingsAccounts() {
-		return saveArray;
+	public SavingsAccount[] getSavingsAccounts() {
+		return savingAccounts;
 	}
 
-	protected int getNumberOfSavingsAccounts() {
-		int i = 0;
-		while (saveArray[i] != null) {
-			i++;
-		}
-
-		return i;
+	public int getNumberOfSavingsAccounts() {
+		return savingAccounts.length;
 	}
 
-	protected double getSavingsBalance() {
+	public double getSavingsBalance() {
 		double svBalance = 0.0;
-		for (int i = 0; i < saveArray.length; i++) {
-			if (saveArray[i] != null)
-				svBalance += saveArray[i].getBalance();
+		for (int i = 0; i < savingAccounts.length; i++) {
+			if (savingAccounts[i] != null)
+				svBalance += savingAccounts[i].getBalance();
 			else
 				break;
 		}
 		return svBalance;
 	}
 
-	protected CDAccount addCDAccount(CDOffering offering, double openingBalance)
+	public CDAccount addCDAccount(CDOffering offering, double openingBalance)
 			throws ExceedsFraudSuspicionLimitException {
 		return new CDAccount(offering, openingBalance);
 	}
 
-	protected CDAccount addCDAccount(CDAccount cdAccount) {
+	public CDAccount addCDAccount(CDAccount cdAccount) {
 		for (int i = 0; i < cdArray.length; i++) {
 			if (cdArray[i] == null) {
 				cdArray[i] = cdAccount;
@@ -260,20 +259,15 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		return cdAccount;
 	}
 
-	protected CDAccount[] getCDAccounts() {
+	public CDAccount[] getCDAccounts() {
 		return cdArray;
 	}
 
-	protected int getNumberOfCDAccounts() {
-		int i = 0;
-		while (cdArray[i] != null) {
-			i++;
-		}
-
-		return i;
+	public int getNumberOfCDAccounts() {
+		return cdArray.length;
 	}
 
-	protected double getCDBalance() {
+	public double getCDBalance() {
 		double cdBalance = 0.0;
 		for (int i = 0; i < cdArray.length; i++) {
 			if (cdArray[i] != null)
@@ -285,7 +279,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		return cdBalance;
 	}
 
-	protected double getCombinedBalance() {
+	public double getCombinedBalance() {
 		return getCDBalance() + getSavingsBalance() + getCheckingBalance();
 	}
 
@@ -341,6 +335,14 @@ public class AccountHolder implements Comparable<AccountHolder> {
 				+ "SSN: " + getSSN() + "\n" + "Combined Balance: $" + getCombinedBalance();
 
 		return accountInfo;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 }
 

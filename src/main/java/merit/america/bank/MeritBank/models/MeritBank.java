@@ -18,7 +18,9 @@ public class MeritBank {
 	public static HashMap<Long, BankAccount> accounts = new HashMap<>();
 
 	public static long accountNumber = 1;
-	public static AccountHolder[] accountHolders;
+	public static long accountHolderNumber = 1;
+	public static long cdoNumber = 1;
+	public static AccountHolder[] accountHolders = new AccountHolder[0];
 	public static CDOffering[] cdOfferings = new CDOffering[0];
 	public static CDOffering offering;
 
@@ -136,6 +138,9 @@ public class MeritBank {
 			} catch (ExceedsCombinedBalanceLimitException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (NegativeAmountException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 			// savings transactions:
@@ -156,6 +161,9 @@ public class MeritBank {
 			try {
 				ac.addCheckingAccount(ca);
 			} catch (ExceedsCombinedBalanceLimitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NegativeAmountException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -215,25 +223,34 @@ public class MeritBank {
 	public static long getNextAccountNumber() {
 		return accountNumber++;
 	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	public static void addAccountHolder(AccountHolder accountHolder) {
-		for (int i = 0; i < accountHolders.length; i++)
-			if (accountHolders[i] == null) {
-				accountHolders[i] = accountHolder;
-
-				// Extending Array if full
-				if (i == accountHolders.length - 1) {
-					AccountHolder[] temp = new AccountHolder[accountHolders.length * 2];
-					for (int j = 0; j < accountHolders.length; j++)
-						temp[j] = accountHolders[j];
-
-					accountHolders = temp;
-				}
-
-				break;
-			}
+	
+	public static long getNextAccountHolderNumber() {
+		return accountHolderNumber++;
 	}
+	
+	public static long getNextcdoNumber() {
+		return cdoNumber++;
+	}
+	
+	public static AccountHolder getAccountHolder(long id) {
+		for (AccountHolder ach : accountHolders) {
+			if (id == ach.getId())
+				return ach;		
+		}
+		return null;
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	 public static void addAccountHolder(AccountHolder accountHolder) {
+		 accountHolder.setId(getNextAccountHolderNumber());
+	        AccountHolder[] tmp = new AccountHolder[accountHolders.length+1];
+	        for (int i = 0; i<accountHolders.length; i++) {
+	            tmp[i] = accountHolders[i];
+	        }
+	        tmp[accountHolders.length] = accountHolder;
+	        accountHolders = tmp;
+	    }
 
 	public static AccountHolder[] getAccountHolders() {
 		return accountHolders;
@@ -301,11 +318,20 @@ public class MeritBank {
 	}
 	
 	public static void addCDO(CDOffering cdOffering) {
+		cdOffering.setId(getNextcdoNumber());
 		CDOffering[] tmp = new CDOffering[cdOfferings.length+1];
 		for(int i = 0; i < cdOfferings.length; i++) {
 			tmp[i] = cdOfferings[i];
 		}
 		tmp[cdOfferings.length] = cdOffering;
 		MeritBank.cdOfferings = tmp;
+	}
+	
+	public static CDOffering getCDOffering(long id) {
+		for (CDOffering ach : cdOfferings) {
+			if (id == ach.getId())
+				return ach;		
+		}
+		return null;
 	}
 }
