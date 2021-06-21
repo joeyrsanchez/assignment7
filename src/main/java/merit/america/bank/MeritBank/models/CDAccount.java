@@ -12,11 +12,11 @@ public class CDAccount extends BankAccount {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name ="cdaccount_id", referencedColumnName = "cdoffering_id")
+	@JoinColumn(name ="cdoffering_id", referencedColumnName = "cdoffering_id")
 	private CDOffering cdOffering;
 
 	@ManyToOne
-	@JoinColumn(name = "cdaccount_id", referencedColumnName = "accountholder_id")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
 	private AccountHolder accountHolder;
 	
 	public CDAccount() {}

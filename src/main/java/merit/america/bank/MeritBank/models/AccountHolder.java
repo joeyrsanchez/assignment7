@@ -13,8 +13,6 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-import org.hibernate.annotations.IndexColumn;
-
 import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitException;
 import merit.america.bank.MeritBank.exceptions.ExceedsFraudSuspicionLimitException;
 
@@ -34,26 +32,24 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	@NotBlank
 	private String ssn;
 	
-	@OrderColumn(name = "checkingaccount_id")
+	@OrderColumn()
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "checkingaccount_id")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
 	private CheckingAccount[] checkingAccounts = new CheckingAccount[0];
 	
-	@OrderColumn(name = "savingaccount_id")
+	@OrderColumn()
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "savingaccount_id")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
 	private SavingsAccount[] savingsAccounts = new SavingsAccount[0];
-	
+
+	@OrderColumn()
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "cdaccount_id")
-	private CDAccount[] cdArray = new CDAccount[0];
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
+	private CDAccount[] cdArray;
 	
 	@OneToOne
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "contactdetails_id")
+	@JoinColumn(name = "contactdetails_id", referencedColumnName = "contactdetails_id")
 	private AccountHoldersContactDetails accountHoldersContactDetails;
-	
-	
-
 	
 
 	// Constructors

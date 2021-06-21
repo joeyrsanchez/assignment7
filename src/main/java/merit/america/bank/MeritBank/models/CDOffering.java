@@ -23,7 +23,7 @@ public class CDOffering {
 	private int term;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "cdoffering_id", referencedColumnName = "cdaccount_id1")
+	@JoinColumn(name = "cdaccount_id", referencedColumnName = "cdoffering_id")
 	private List<CDAccount> cdAccount;
 	
 	public List<CDAccount> getCdAccount() {

@@ -19,7 +19,7 @@ public class CheckingAccount extends BankAccount{
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "checkingaccount_id", referencedColumnName = "accountholder_id")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
 	private AccountHolder accountHolder;
 
 	
