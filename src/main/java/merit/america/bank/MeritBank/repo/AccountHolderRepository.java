@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import merit.america.bank.MeritBank.models.AccountHolder;
 
-public interface AccountHolderRepository extends JpaRepository<AccountHolder, Long> {
+public interface AccountHolderRepository extends JpaRepository<AccountHolder, Integer> {
 	  List<AccountHolder> findByLastName(String lastName);
 
 	  AccountHolder findById(long id);

@@ -2,9 +2,8 @@ package merit.america.bank.MeritBank.models;
 
 import javax.persistence.*;
 
-
-@Table(name = "accountholders_log", catalog = "test")
 @Entity
+@Table(name = "contact_details", catalog = "assignment6")
 public class AccountHoldersContactDetails {
 
 	@Id
@@ -15,7 +14,7 @@ public class AccountHoldersContactDetails {
 	private long phoneNumber;
 	
 	@OneToOne (cascade = CascadeType.ALL)
-	@JoinColumn(name ="id", referencedColumnName = "id")
+	@JoinColumn(name ="contactdetails_id", referencedColumnName = "accountholder_id")
 	private AccountHolder accountHolder;
 	
 	

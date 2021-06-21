@@ -22,15 +22,9 @@ public abstract class BankAccount {
 	private double balance;
 	private Date openingDate = new Date();
 	
-	@Id 
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name= "account_id")
 	private Integer id;
-	
-	@ManyToOne
-	@JoinColumn(name = "account_id", referencedColumnName = "id")
+
 	private AccountHolder accountHolder;
-	
 	
 	public BankAccount() {}
 	
@@ -88,6 +82,18 @@ public abstract class BankAccount {
 
 	public double futureValue(int years){
 		return MeritBank.recursiveFutureValue( getBalance(), years, getInterestRate() );
+	}
+
+	public AccountHolder getAccountHolder() {
+		return accountHolder;
+	}
+
+	public void setAccountHolder(AccountHolder accountHolder) {
+		this.accountHolder = accountHolder;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 }

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import merit.america.bank.MeritBank.models.CDOffering;
 
-public interface CDOfferingRepository extends JpaRepository<CDOffering, Long>{
+public interface CDOfferingRepository extends JpaRepository<CDOffering, Integer>{
 	Optional<CDOffering> findById(Integer id);
 
 }

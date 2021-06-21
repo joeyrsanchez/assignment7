@@ -7,8 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "checking_accounts", catalog = "assignment6")
 public class CheckingAccount extends BankAccount{
 	
 	@Id 
@@ -17,7 +19,7 @@ public class CheckingAccount extends BankAccount{
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "checkingaccount_id", referencedColumnName = "accountholder_id")
 	private AccountHolder accountHolder;
 
 	

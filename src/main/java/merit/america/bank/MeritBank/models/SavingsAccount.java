@@ -7,17 +7,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "savings_accounts", catalog = "assignment6")
 public class SavingsAccount extends BankAccount {
 	
 	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name= "savingsaccount_id")
-	private Integer savingsaccount_id;
+	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "savingsaccount_id", referencedColumnName = "accountholder_id")
 	private AccountHolder accountHolder;
 	
 	SavingsAccount() {}

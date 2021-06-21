@@ -1,27 +1,22 @@
 package merit.america.bank.MeritBank.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "cd_accounts", catalog = "assignment6")
 public class CDAccount extends BankAccount {
-	
-	@ManyToOne
-	@JoinColumn(name ="cdOffering_id", referencedColumnName = "cdOffering_id")
-	private CDOffering cdOffering;
 	
 	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name= "account_id")
+	@Column(name= "cdaccount_id")
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name ="cdaccount_id", referencedColumnName = "cdoffering_id")
+	private CDOffering cdOffering;
+
+	@ManyToOne
+	@JoinColumn(name = "cdaccount_id", referencedColumnName = "accountholder_id")
 	private AccountHolder accountHolder;
 	
 	public CDAccount() {}

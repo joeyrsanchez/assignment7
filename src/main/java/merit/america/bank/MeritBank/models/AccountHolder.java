@@ -9,17 +9,23 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+
+import org.hibernate.annotations.IndexColumn;
 
 import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitException;
 import merit.america.bank.MeritBank.exceptions.ExceedsFraudSuspicionLimitException;
 
 @Entity
+@Table(name = "account_holders", catalog = "assignment6")
 public class AccountHolder implements Comparable<AccountHolder> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private long id;
+	@Column(name = "accountholder_id")
+	private Integer id;
+	
 	@NotBlank
 	private String firstName;
 	private String middleName;
@@ -27,18 +33,23 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	private String lastName;
 	@NotBlank
 	private String ssn;
+	
+	@OrderColumn(name = "checkingaccount_id")
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "checkingaccount_id", referencedColumnName = "checkingaccount_id")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "checkingaccount_id")
 	private CheckingAccount[] checkingAccounts = new CheckingAccount[0];
+	
+	@OrderColumn(name = "savingaccount_id")
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "savingsaccount_id", referencedColumnName = "savingsaccount_id")
-	private SavingsAccount[] savingAccounts = new SavingsAccount[0];
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "savingaccount_id")
+	private SavingsAccount[] savingsAccounts = new SavingsAccount[0];
+	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", referencedColumnName = "account_id1")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "cdaccount_id")
 	private CDAccount[] cdArray = new CDAccount[0];
 	
 	@OneToOne
-	@JoinColumn(name = "id", referencedColumnName = "contactdetails_id")
+	@JoinColumn(name = "accountholder_id", referencedColumnName = "contactdetails_id")
 	private AccountHoldersContactDetails accountHoldersContactDetails;
 	
 	
@@ -204,30 +215,30 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException {
 		if (savingsAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<MeritBank.COMBINED_BALANCE_MAX && savingsAccount!=null) {
-			SavingsAccount[] tmp = new SavingsAccount[savingAccounts.length+1];
-			for (int i = 0; i<savingAccounts.length; i++) {
-				tmp[i] = savingAccounts[i];
+			SavingsAccount[] tmp = new SavingsAccount[savingsAccounts.length+1];
+			for (int i = 0; i<savingsAccounts.length; i++) {
+				tmp[i] = savingsAccounts[i];
 			}
-			tmp[savingAccounts.length] = savingsAccount;
-			savingAccounts = tmp;
+			tmp[savingsAccounts.length] = savingsAccount;
+			savingsAccounts = tmp;
 			return savingsAccount;
 		}
 		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
 	public SavingsAccount[] getSavingsAccounts() {
-		return savingAccounts;
+		return savingsAccounts;
 	}
 
 	public int getNumberOfSavingsAccounts() {
-		return savingAccounts.length;
+		return savingsAccounts.length;
 	}
 
 	public double getSavingsBalance() {
 		double svBalance = 0.0;
-		for (int i = 0; i < savingAccounts.length; i++) {
-			if (savingAccounts[i] != null)
-				svBalance += savingAccounts[i].getBalance();
+		for (int i = 0; i < savingsAccounts.length; i++) {
+			if (savingsAccounts[i] != null)
+				svBalance += savingsAccounts[i].getBalance();
 			else
 				break;
 		}
@@ -331,7 +342,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 }
