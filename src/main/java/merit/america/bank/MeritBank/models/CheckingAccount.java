@@ -10,13 +10,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "checking_accounts", catalog = "assignment6")
+@Table(name = "checking_accounts")
 public class CheckingAccount extends BankAccount{
 	
 	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name= "checkingaccount_id")
-	private Integer id;
+	private long id;
 	
 	@ManyToOne
 	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")

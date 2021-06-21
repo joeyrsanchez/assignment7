@@ -3,13 +3,13 @@ package merit.america.bank.MeritBank.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "contact_details", catalog = "assignment6")
+@Table(name = "contact_details")
 public class AccountHoldersContactDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "contactdetails_id")
-	private Integer id;
+	private long id;
 	private String address;
 	private long phoneNumber;
 	
@@ -19,7 +19,7 @@ public class AccountHoldersContactDetails {
 	
 	
 	// Setters and Getters
-	public Integer getId() {return id;}
+	public long getId() {return id;}
 	public String getAddress() {return address;}
 	public AccountHoldersContactDetails setAddress(String address) {
 		this.address = address;

@@ -17,12 +17,12 @@ import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitExcept
 import merit.america.bank.MeritBank.exceptions.ExceedsFraudSuspicionLimitException;
 
 @Entity
-@Table(name = "account_holders", catalog = "assignment6")
+@Table(name = "account_holders")
 public class AccountHolder implements Comparable<AccountHolder> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "accountholder_id")
-	private Integer id;
+	private long id;
 	
 	@NotBlank
 	private String firstName;
@@ -71,44 +71,6 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		this.ssn = ssn;
 		new CheckingAccount(checkingAccountOpeningBalance);
 		new SavingsAccount(savingsAccountOpeningBalance);
-	}
-
-//READ ACCOUNT HOLDER INFO from FILE
-	public static AccountHolder readFromString(String accountHolderData) throws Exception {
-		try {
-			int firstCh = 0;
-			int lastCh = accountHolderData.indexOf(",");
-			// First name
-			String fn = accountHolderData.substring(firstCh, lastCh);
-			// Mid Name
-			firstCh = lastCh + 1;
-			lastCh = accountHolderData.indexOf(",", firstCh);
-			String mn = accountHolderData.substring(firstCh, lastCh);
-			// Last Name
-			firstCh = lastCh + 1;
-			lastCh = accountHolderData.indexOf(",", firstCh);
-			String ln = accountHolderData.substring(firstCh, lastCh);
-			// SSN
-			firstCh = lastCh + 1;
-			String sn = accountHolderData.substring(firstCh);
-			AccountHolder accountHolder = new AccountHolder(fn, mn, ln, sn);
-
-			return accountHolder;
-			
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
-	public static String writeToString() {
-		int l = 0;
-		String accountString = "";
-		while (MeritBank.getAccountHolders()[l] != null) {
-			accountString += MeritBank.getAccountHolders()[l].toString() + "\n\n";
-			l++;
-		}
-
-		return accountString;
 	}
 
 	public int compareTo(AccountHolder otherAccountHolder) {
@@ -280,66 +242,5 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		return getCDBalance() + getSavingsBalance() + getCheckingBalance();
 	}
 
-	public String toStringForFile() {
-		int n = 0;
-		for (int i = 0; i < getCheckingAccounts().length; i++) {
-			if (getCheckingAccounts()[i] != null) {
-				n++;
-			}
-		}
-		String accountInfo = getFirstName() + "," + getMiddleName() + "," + getLastName() + "," + getSSN() + "\n" + n
-				+ "\n";
-		for (int i = 0; i < getCheckingAccounts().length; i++) {
-			if (getCheckingAccounts()[i] != null) {
-				accountInfo += getCheckingAccounts()[i].toString() + "\n";
-			}
-		}
-
-		n = 0;
-		for (int i = 0; i < getSavingsAccounts().length; i++) {
-			if (getSavingsAccounts()[i] != null) {
-				n++;
-			}
-		}
-		accountInfo += n + "\n";
-
-		for (int i = 0; i < getSavingsAccounts().length; i++) {
-			if (getSavingsAccounts()[i] != null) {
-				accountInfo += getSavingsAccounts()[i].toString() + "\n";
-			}
-		}
-
-		n = 0;
-		for (int i = 0; i < getCDAccounts().length; i++) {
-			if (getCDAccounts()[i] != null) {
-				n++;
-			}
-		}
-		accountInfo += n + "\n";
-
-		for (int i = 0; i < getCDAccounts().length; i++) {
-			if (getCDAccounts()[i] != null) {
-				accountInfo += getCDAccounts()[i].toString() + "\n";
-			}
-		}
-
-		return accountInfo;
-	}
-
-//	 Outputs account info
-	public String toString() {
-		String accountInfo = "\n" + "Name: " + getFirstName() + " " + getMiddleName() + " " + getLastName() + "\n"
-				+ "SSN: " + getSSN() + "\n" + "Combined Balance: $" + getCombinedBalance();
-
-		return accountInfo;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 }
 

@@ -2,12 +2,6 @@ package merit.america.bank.MeritBank.models;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -22,7 +16,7 @@ public abstract class BankAccount {
 	private double balance;
 	private Date openingDate = new Date();
 	
-	private Integer id;
+	private long id;
 
 	private AccountHolder accountHolder;
 	
@@ -92,7 +86,7 @@ public abstract class BankAccount {
 		this.accountHolder = accountHolder;
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
