@@ -1,4 +1,4 @@
-package merit.america.bank.MeritBank.models;
+package merit.america.bank.MeritBank.exceptions;
 
 public class NegativeAmountException extends Exception {
 	NegativeAmountException() {

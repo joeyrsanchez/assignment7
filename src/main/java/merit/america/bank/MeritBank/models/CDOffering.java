@@ -1,16 +1,48 @@
 package merit.america.bank.MeritBank.models;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import java.util.List;
+
+
+
+@Entity
 public class CDOffering {
 	@Min (value = 0)
 	@Max (value = 1)
 	private double interestRate;
 	@Min (value = 1)
 	private int term;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "cdOffering_id")
 	private long id;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "cdOffering_id", referencedColumnName = "cdOffering_id")
+	private List<CDAccount> cdAccount;
+	
+	public List<CDAccount> getCdAccount() {
+		return cdAccount;
+	}
+
+	public CDOffering setCdAccount(List<CDAccount> cdAccount) {
+		this.cdAccount = cdAccount;
+		return this;
+	}
+	
+	
+
 	CDOffering() {}
 	
 	public CDOffering(int term, double interestRate) {

@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitException;
 import merit.america.bank.MeritBank.models.*;
 
 import org.springframework.http.HttpStatus;

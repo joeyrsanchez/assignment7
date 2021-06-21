@@ -2,6 +2,12 @@ package merit.america.bank.MeritBank.models;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -16,11 +22,20 @@ public abstract class BankAccount {
 	private double balance;
 	private Date openingDate = new Date();
 	
+	@Id 
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name= "account_id")
+	private Integer id;
+	
+	@ManyToOne
+	@JoinColumn(name = "account_id", referencedColumnName = "id")
+	private AccountHolder accountHolder;
+	
+	
 	public BankAccount() {}
 	
 	public BankAccount(double balance, double interestRate){
 		this.balance = balance;
-		accountNumber = MeritBank.getNextAccountNumber();
 		setInterestRate( interestRate );
 	}
 

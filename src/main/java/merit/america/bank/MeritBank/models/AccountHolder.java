@@ -1,8 +1,25 @@
 package merit.america.bank.MeritBank.models;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 
+import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitException;
+import merit.america.bank.MeritBank.exceptions.ExceedsFraudSuspicionLimitException;
+
+@Entity
 public class AccountHolder implements Comparable<AccountHolder> {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
+	private long id;
 	@NotBlank
 	private String firstName;
 	private String middleName;
@@ -10,10 +27,23 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	private String lastName;
 	@NotBlank
 	private String ssn;
-	private long id;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "checkingaccount_id", referencedColumnName = "checkingaccount_id")
 	private CheckingAccount[] checkingAccounts = new CheckingAccount[0];
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "savingsaccount_id", referencedColumnName = "savingsaccount_id")
 	private SavingsAccount[] savingAccounts = new SavingsAccount[0];
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id", referencedColumnName = "account_id1")
 	private CDAccount[] cdArray = new CDAccount[0];
+	
+	@OneToOne
+	@JoinColumn(name = "id", referencedColumnName = "contactdetails_id")
+	private AccountHoldersContactDetails accountHoldersContactDetails;
+	
+	
+
+	
 
 	// Constructors
 

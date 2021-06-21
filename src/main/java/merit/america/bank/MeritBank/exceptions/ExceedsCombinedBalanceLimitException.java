@@ -1,7 +1,7 @@
-package merit.america.bank.MeritBank.models;
+package merit.america.bank.MeritBank.exceptions;
 
 public class ExceedsCombinedBalanceLimitException extends Exception {
-	ExceedsCombinedBalanceLimitException() {
+	public ExceedsCombinedBalanceLimitException() {
 		System.out.println("ExceedsCombinedBalanceLimitException");
 	}
 

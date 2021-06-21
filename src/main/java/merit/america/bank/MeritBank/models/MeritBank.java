@@ -10,9 +10,6 @@ public class MeritBank {
 
 	public static HashMap<Long, BankAccount> accounts = new HashMap<>();
 
-	public static long accountNumber = 1;
-	public static long accountHolderNumber = 1;
-	public static long cdoNumber = 1;
 	public static AccountHolder[] accountHolders = new AccountHolder[0];
 	public static CDOffering[] cdOfferings = new CDOffering[0];
 	public static CDOffering offering;
@@ -47,22 +44,6 @@ public class MeritBank {
 
 		return accountHolders;
 	}
-
-	static void setNextAccountNumber(long nextAccountNumber) {
-		accountNumber = nextAccountNumber;
-	}
-
-	public static long getNextAccountNumber() {
-		return accountNumber++;
-	}
-	
-	public static long getNextAccountHolderNumber() {
-		return accountHolderNumber++;
-	}
-	
-	public static long getNextcdoNumber() {
-		return cdoNumber++;
-	}
 	
 	public static AccountHolder getAccountHolder(long id) {
 		for (AccountHolder ach : accountHolders) {
@@ -75,7 +56,6 @@ public class MeritBank {
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	 public static void addAccountHolder(AccountHolder accountHolder) {
-		 accountHolder.setId(getNextAccountHolderNumber());
 	        AccountHolder[] tmp = new AccountHolder[accountHolders.length+1];
 	        for (int i = 0; i<accountHolders.length; i++) {
 	            tmp[i] = accountHolders[i];
@@ -150,7 +130,6 @@ public class MeritBank {
 	}
 	
 	public static void addCDO(CDOffering cdOffering) {
-		cdOffering.setId(getNextcdoNumber());
 		CDOffering[] tmp = new CDOffering[cdOfferings.length+1];
 		for(int i = 0; i < cdOfferings.length; i++) {
 			tmp[i] = cdOfferings[i];
