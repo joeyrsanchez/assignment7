@@ -54,7 +54,11 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	// Constructors
 
-	public AccountHolder() {}
+	public AccountHolder() {
+		this.checkingAccounts = new CheckingAccount[0];
+		this.savingsAccounts = new SavingsAccount[0];
+		this.cdArray= new CDAccount[0];
+	}
 
 	public AccountHolder(String firstName, String middleName, String lastName, String ssn) {
 		this.firstName = firstName;
@@ -238,7 +242,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		return cdBalance;
 	}
 
-	public double getCombinedBalance() {
+	private double getCombinedBalance() {
 		return getCDBalance() + getSavingsBalance() + getCheckingBalance();
 	}
 

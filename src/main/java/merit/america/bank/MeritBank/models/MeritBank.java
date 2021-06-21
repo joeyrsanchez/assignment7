@@ -44,16 +44,7 @@ public class MeritBank {
 
 		return accountHolders;
 	}
-	
-	public static AccountHolder getAccountHolder(long id) {
-		for (AccountHolder ach : accountHolders) {
-			if (id == ach.getId())
-				return ach;		
-		}
-		return null;
-	}
-
-	
+		
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	 public static void addAccountHolder(AccountHolder accountHolder) {
 	        AccountHolder[] tmp = new AccountHolder[accountHolders.length+1];
@@ -115,18 +106,6 @@ public class MeritBank {
 
 	public static void setCDOfferings(CDOffering[] offerings) {
 		cdOfferings = offerings;
-	}
-
-	public static double totalBalances() {
-		double total = 0.0;
-		for (int i = 0; i < accountHolders.length; i++) {
-			if (accountHolders[i] != null)
-				total += accountHolders[i].getCombinedBalance();
-			else
-				break;
-		}
-
-		return total;
 	}
 	
 	public static void addCDO(CDOffering cdOffering) {
