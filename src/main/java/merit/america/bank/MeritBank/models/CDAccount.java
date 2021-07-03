@@ -2,12 +2,15 @@ package merit.america.bank.MeritBank.models;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @DiscriminatorValue("CD")
 public class CDAccount extends BankAccount {
 	
 	@JoinColumn(name = "cd_offering_id", nullable = true)
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	private CDOffering cdOffering;
 
 	public CDAccount() {}

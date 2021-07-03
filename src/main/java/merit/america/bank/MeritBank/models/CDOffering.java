@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "cd_offerings")
@@ -25,6 +27,7 @@ public class CDOffering {
 	@OneToMany(
 			mappedBy ="cdOffering",
 			cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<CDAccount> cdAccount;
 	
 	public CDOffering setCdAccount(List<CDAccount> cdAccount) {

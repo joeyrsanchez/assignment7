@@ -11,10 +11,8 @@ import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitExcept
 import merit.america.bank.MeritBank.models.*;
 import merit.america.bank.MeritBank.repo.AccountHolderRepository;
 import merit.america.bank.MeritBank.repo.AccountHoldersContactDetailsRepository;
-import merit.america.bank.MeritBank.repo.CDAccountRepository;
 import merit.america.bank.MeritBank.repo.CDOfferingRepository;
-import merit.america.bank.MeritBank.repo.CheckingAccountRepository;
-import merit.america.bank.MeritBank.repo.SavingsAccountRepository;
+import merit.america.bank.MeritBank.repo.BankAccountRepository;
 
 import org.springframework.http.HttpStatus;
 
@@ -22,24 +20,21 @@ import org.springframework.http.HttpStatus;
 public class AccountHolderController {
 	
 private AccountHolderRepository accountHolderRepository;
+@SuppressWarnings("unused")
 private AccountHoldersContactDetailsRepository accountHoldersContactDetailsRepository;
-private CDAccountRepository cdAccountRepository;
+private BankAccountRepository bankAccountRepository;
 private CDOfferingRepository cdOfferingRepository;
-private CheckingAccountRepository checkingAccountRepository;
-private SavingsAccountRepository savingsAccountRepository;
 	
-	private AccountHolderController(AccountHolderRepository accountHolderRepository, 
+	private AccountHolderController(
+			AccountHolderRepository accountHolderRepository, 
 			AccountHoldersContactDetailsRepository accountHoldersContactDetailsRepository,
-			CDAccountRepository cdAccountRepository,
 			CDOfferingRepository cdOfferingRepository,
-			CheckingAccountRepository checkingAccountRepository,
-			SavingsAccountRepository savingsAccountRepository) {
+			BankAccountRepository bankAccountRepository) {
+		
 	    this.accountHolderRepository = accountHolderRepository;
 	    this.accountHoldersContactDetailsRepository = accountHoldersContactDetailsRepository;
-	    this.cdAccountRepository = cdAccountRepository;
 	    this.cdOfferingRepository = cdOfferingRepository;
-	    this.checkingAccountRepository = checkingAccountRepository;
-	    this.savingsAccountRepository = savingsAccountRepository;
+	    this.bankAccountRepository = bankAccountRepository;
 	}
 	
 	
@@ -67,7 +62,7 @@ private SavingsAccountRepository savingsAccountRepository;
 	}
 	
 	@GetMapping(value = "/AccountHolders/{id}/CheckingAccounts")
-	public CheckingAccount[] getAccountHolderCheckingAccounts(@PathVariable("id")long id) {
+	public List<CheckingAccount> getAccountHolderCheckingAccounts(@PathVariable("id")long id) {
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
@@ -87,12 +82,12 @@ private SavingsAccountRepository savingsAccountRepository;
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount Exceeds Combined Balance Limit");
 		} 
 		accountHolderRepository.save(holder);
-		checkingAccountRepository.save(checkingAccount);
+		bankAccountRepository.save(checkingAccount);
 		return checkingAccount;
 	}
 	
 	@GetMapping(value = "/AccountHolders/{id}/SavingsAccounts")
-	public SavingsAccount[] getAccountHolderSavingsAccounts(@PathVariable("id")long id) {
+	public List<SavingsAccount> getAccountHolderSavingsAccounts(@PathVariable("id")long id) {
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
@@ -112,7 +107,7 @@ private SavingsAccountRepository savingsAccountRepository;
 		} 
 		
 		accountHolderRepository.save(holder);
-		savingsAccountRepository.save(savingsAccount);
+		bankAccountRepository.save(savingsAccount);
 		return savingsAccount;
 	}
 	
@@ -140,7 +135,7 @@ private SavingsAccountRepository savingsAccountRepository;
 		cdAccount = holder.addCDAccount(cdAccount);
 		
 		accountHolderRepository.save(holder);
-		cdAccountRepository.save(cdAccount);
+		bankAccountRepository.save(cdAccount);
 		return cdAccount;
 
 	}

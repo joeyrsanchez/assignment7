@@ -2,7 +2,6 @@ package merit.america.bank.MeritBank.models;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -27,20 +26,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @DiscriminatorOptions(force=true)
 public abstract class BankAccount {
 	
-	//Instance Variables
-	@Min(value = 0)
-	@Max(value = 1)
-	private double interestRate = 0;
-	private long accountNumber;
-	@Min(value = 0)
-	private double balance;
-	private Date openingDate = new Date();
 	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	public void setId(long id) {
 		this.id = id;
 	}
+	
+	//Instance Variables
+	@Min(value = 0)
+	@Max(value = 1)
+	private double interestRate = 0;
+	@Min(value = 0)
+	private double balance;
+	
+	private Date openingDate = new Date();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_holder_id", nullable = false)
@@ -56,16 +56,15 @@ public abstract class BankAccount {
 	}
 
 	public BankAccount(long accountNumber, double balance, double interestRate){
-		this.accountNumber = accountNumber;
 		this.balance = balance;
 		this.interestRate = interestRate;
 	}
 
 	//Getter and Setter Methods
 	public void setInterestRate(double interestRate){this.interestRate = interestRate;}
+	@JsonIgnore
 	public long getOpenedOn(){return openingDate.getTime();}
 	public void setOpenedOn(Date openDate){this.openingDate = openDate;}
-	public void setAccountNumber(long accountNumber){this.accountNumber = accountNumber;}
 	
 	public void setBalance(double balance) {
 		this.balance = balance;
@@ -73,7 +72,6 @@ public abstract class BankAccount {
 
 
 	//Get accountnumber, balance, and interestrate
-	public long getAccountNumber(){return accountNumber;}
 	public double getBalance(){return balance;}
 	public double getInterestRate(){return interestRate;}
 

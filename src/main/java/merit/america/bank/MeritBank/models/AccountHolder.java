@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -34,19 +33,20 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	@NotBlank
 	private String ssn;
 	
-	@OrderColumn
-	@OneToMany(
-			mappedBy = "accountHolder",
-			cascade = CascadeType.ALL)
-	private CheckingAccount[] checkingAccounts = new CheckingAccount[0];
-	
-	@OrderColumn
-	@OneToMany(
-			mappedBy = "accountHolder",
-			cascade = CascadeType.ALL)
-	private SavingsAccount[] savingsAccounts = new SavingsAccount[0];
+	public long getId() {
+		return id;
+	}
 
-	@OrderColumn
+	@OneToMany(
+			mappedBy = "accountHolder",
+			cascade = CascadeType.ALL)
+	private List<CheckingAccount> checkingAccounts;
+	
+	@OneToMany(
+			mappedBy = "accountHolder",
+			cascade = CascadeType.ALL)
+	private List<SavingsAccount> savingsAccounts;
+
 	@OneToMany(
 			mappedBy = "accountHolder",
 			cascade = CascadeType.ALL)
@@ -60,8 +60,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	// Constructors
 
 	public AccountHolder() {
-		this.checkingAccounts = new CheckingAccount[0];
-		this.savingsAccounts = new SavingsAccount[0];
+		this.checkingAccounts = new ArrayList<CheckingAccount>();
+		this.savingsAccounts = new ArrayList<SavingsAccount>();
 		this.cdArray = new ArrayList<CDAccount>();
 	}
 
@@ -140,33 +140,25 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException {
 		if (checkingAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<MeritBank.COMBINED_BALANCE_MAX && checkingAccount!=null) {
-			CheckingAccount[] tmp = new CheckingAccount[checkingAccounts.length+1];
-			for (int i = 0; i<checkingAccounts.length; i++) {
-				tmp[i] = checkingAccounts[i];
-			}
-			tmp[checkingAccounts.length] = checkingAccount;
-			checkingAccounts = tmp;
+			checkingAccounts.add(checkingAccount);
 			checkingAccount.setAccountHolder(this);
 			return checkingAccount;
 		}
 		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
-	public CheckingAccount[] getCheckingAccounts() {
+	public List<CheckingAccount> getCheckingAccounts() {
 		return checkingAccounts;
 	}
 
 	public int getNumberOfCheckingAccounts() {
-		return checkingAccounts.length;
+		return checkingAccounts.size();
 	}
 
 	public double getCheckingBalance() {
 		double chBalance = 0.0;
-		for (int i = 0; i < checkingAccounts.length; i++) {
-			if (checkingAccounts[i] != null)
-				chBalance += checkingAccounts[i].getBalance();
-			else
-				break;
+		for(CheckingAccount a : checkingAccounts) {
+			chBalance += a.getBalance();
 		}
 
 		return chBalance;
@@ -183,33 +175,25 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException {
 		if (savingsAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<MeritBank.COMBINED_BALANCE_MAX && savingsAccount!=null) {
-			SavingsAccount[] tmp = new SavingsAccount[savingsAccounts.length+1];
-			for (int i = 0; i<savingsAccounts.length; i++) {
-				tmp[i] = savingsAccounts[i];
-			}
-			tmp[savingsAccounts.length] = savingsAccount;
-			savingsAccounts = tmp;
+			savingsAccounts.add(savingsAccount);
 			savingsAccount.setAccountHolder(this);
 			return savingsAccount;
 		}
 		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
-	public SavingsAccount[] getSavingsAccounts() {
+	public List<SavingsAccount> getSavingsAccounts() {
 		return savingsAccounts;
 	}
 
 	public int getNumberOfSavingsAccounts() {
-		return savingsAccounts.length;
+		return savingsAccounts.size();
 	}
 
 	public double getSavingsBalance() {
 		double svBalance = 0.0;
-		for (int i = 0; i < savingsAccounts.length; i++) {
-			if (savingsAccounts[i] != null)
-				svBalance += savingsAccounts[i].getBalance();
-			else
-				break;
+		for(SavingsAccount a : savingsAccounts) {
+			svBalance += a.getBalance();
 		}
 		return svBalance;
 	}
