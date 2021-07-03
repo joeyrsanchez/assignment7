@@ -3,22 +3,13 @@ package merit.america.bank.MeritBank.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cd_accounts")
+@DiscriminatorValue("CD")
 public class CDAccount extends BankAccount {
 	
-	@Id 
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name= "cdaccount_id")
-	private long id;
-	
-	@ManyToOne
-	@JoinColumn(name ="cdoffering_id", referencedColumnName = "cdoffering_id")
+	@JoinColumn(name = "cd_offering_id", nullable = true)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private CDOffering cdOffering;
 
-	@ManyToOne
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
-	private AccountHolder accountHolder;
-	
 	public CDAccount() {}
 	
 	public CDAccount (CDOffering offering, double balance)  {

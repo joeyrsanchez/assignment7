@@ -13,11 +13,13 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
+import java.util.List;
 import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitException;
 import merit.america.bank.MeritBank.exceptions.ExceedsFraudSuspicionLimitException;
 
 @Entity
-@Table(name = "account_holders")
+@Table(name = "accountholder")
 public class AccountHolder implements Comparable<AccountHolder> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,20 +34,23 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	@NotBlank
 	private String ssn;
 	
-	@OrderColumn()
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
+	@OrderColumn
+	@OneToMany(
+			mappedBy = "accountHolder",
+			cascade = CascadeType.ALL)
 	private CheckingAccount[] checkingAccounts = new CheckingAccount[0];
 	
-	@OrderColumn()
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
+	@OrderColumn
+	@OneToMany(
+			mappedBy = "accountHolder",
+			cascade = CascadeType.ALL)
 	private SavingsAccount[] savingsAccounts = new SavingsAccount[0];
 
-	@OrderColumn()
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "accountholder_id", referencedColumnName = "accountholder_id")
-	private CDAccount[] cdArray;
+	@OrderColumn
+	@OneToMany(
+			mappedBy = "accountHolder",
+			cascade = CascadeType.ALL)
+	private List<CDAccount> cdArray;
 	
 	@OneToOne
 	@JoinColumn(name = "contactdetails_id", referencedColumnName = "contactdetails_id")
@@ -57,7 +62,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	public AccountHolder() {
 		this.checkingAccounts = new CheckingAccount[0];
 		this.savingsAccounts = new SavingsAccount[0];
-		this.cdArray= new CDAccount[0];
+		this.cdArray = new ArrayList<CDAccount>();
 	}
 
 	public AccountHolder(String firstName, String middleName, String lastName, String ssn) {
@@ -129,7 +134,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException {
 		CheckingAccount checkingAccount = new CheckingAccount(openingBalance);
-
+		
 		return addCheckingAccount(checkingAccount);
 	}
 
@@ -141,6 +146,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 			}
 			tmp[checkingAccounts.length] = checkingAccount;
 			checkingAccounts = tmp;
+			checkingAccount.setAccountHolder(this);
 			return checkingAccount;
 		}
 		else throw new ExceedsCombinedBalanceLimitException();
@@ -183,6 +189,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 			}
 			tmp[savingsAccounts.length] = savingsAccount;
 			savingsAccounts = tmp;
+			savingsAccount.setAccountHolder(this);
 			return savingsAccount;
 		}
 		else throw new ExceedsCombinedBalanceLimitException();
@@ -213,31 +220,24 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	}
 
 	public CDAccount addCDAccount(CDAccount cdAccount) {
-		CDAccount[] tmp = new CDAccount[cdArray.length+1];
-		for (int i = 0; i<cdArray.length; i++) {
-			tmp[i] = cdArray[i];
-		}
-		tmp[cdArray.length] = cdAccount;
-		cdArray = tmp;
+		cdAccount.setAccountHolder(this);
+		cdArray.add(cdAccount);
 		return cdAccount;
 	}
 
-	public CDAccount[] getCDAccounts() {
+	public List<CDAccount> getCDAccounts() {
 		return cdArray;
 	}
 
 	public int getNumberOfCDAccounts() {
-		return cdArray.length;
+		return cdArray.size();
 	}
 
 	public double getCDBalance() {
 		double cdBalance = 0.0;
-		for (int i = 0; i < cdArray.length; i++) {
-			if (cdArray[i] != null)
-				cdBalance += cdArray[i].getBalance();
-			else
-				break;
-		}
+		for(CDAccount a : cdArray) {
+			cdBalance += a.getBalance();
+			}
 
 		return cdBalance;
 	}

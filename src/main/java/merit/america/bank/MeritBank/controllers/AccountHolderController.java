@@ -1,5 +1,7 @@
 package merit.america.bank.MeritBank.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +46,9 @@ private SavingsAccountRepository savingsAccountRepository;
 	
 	
 	@GetMapping("/AccountHolders")
-	public static AccountHolder[] getAllAccountHolders(){
+	public List<AccountHolder> getAllAccountHolders(){
 		
-		return MeritBank.getAccountHolders();
+		return accountHolderRepository.findAll();
 	}
 	
 	@PostMapping(value = "/AccountHolders")
@@ -74,7 +76,8 @@ private SavingsAccountRepository savingsAccountRepository;
 	
 	@PostMapping(value = "/AccountHolders/{id}/CheckingAccounts")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CheckingAccount addAccountHolderCheckingAccounts(@PathVariable("id")long id, @RequestBody @Valid CheckingAccount checkingAccount) {
+	public CheckingAccount addAccountHolderCheckingAccounts(@PathVariable("id")long id, 
+			@RequestBody @Valid CheckingAccount checkingAccount) {
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
@@ -114,7 +117,7 @@ private SavingsAccountRepository savingsAccountRepository;
 	}
 	
 	@GetMapping(value = "/AccountHolders/{id}/CDAccounts")
-	public CDAccount[] getAccountHolderCDAccounts(@PathVariable("id")long id) {
+	public List <CDAccount> getAccountHolderCDAccounts(@PathVariable("id")long id) {
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");

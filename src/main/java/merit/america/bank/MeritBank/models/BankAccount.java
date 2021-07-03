@@ -2,9 +2,29 @@ package merit.america.bank.MeritBank.models;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.hibernate.annotations.DiscriminatorOptions;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="account_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorOptions(force=true)
 public abstract class BankAccount {
 	
 	//Instance Variables
@@ -15,10 +35,18 @@ public abstract class BankAccount {
 	@Min(value = 0)
 	private double balance;
 	private Date openingDate = new Date();
-	
+	@Id 
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+	public void setId(long id) {
+		this.id = id;
+	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "account_holder_id", nullable = false)
+	@JsonIgnore
 	private AccountHolder accountHolder;
+	
 	
 	public BankAccount() {}
 	

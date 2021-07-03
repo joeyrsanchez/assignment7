@@ -22,8 +22,9 @@ public class CDOffering {
 	@Min (value = 1)
 	private int term;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "cdaccount_id", referencedColumnName = "cdoffering_id")
+	@OneToMany(
+			mappedBy ="cdOffering",
+			cascade = CascadeType.ALL)
 	private List<CDAccount> cdAccount;
 	
 	public CDOffering setCdAccount(List<CDAccount> cdAccount) {
