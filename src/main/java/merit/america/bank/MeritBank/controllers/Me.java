@@ -15,6 +15,8 @@ import merit.america.bank.MeritBank.repo.CDOfferingRepository;
 import merit.america.bank.MeritBank.repo.BankAccountRepository;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 public class Me {
@@ -37,42 +39,39 @@ private CDOfferingRepository cdOfferingRepository;
 	    this.bankAccountRepository = bankAccountRepository;
 	}
 	
+
 	
-	
-	
-	@GetMapping("/AccountHolders")
-	public List<AccountHolder> getAllAccountHolders(){
+	@GetMapping(value = "/Me")
+	public AccountHolder getAccountHolder() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
 		
-		return accountHolderRepository.findAll();
-	}
-	
-	@PostMapping(value = "/AccountHolders")
-	@ResponseStatus(HttpStatus.CREATED)
-	public AccountHolder addAccountHolder(@RequestBody @Valid AccountHolder ach) {
-		accountHolderRepository.save(ach);
-		return ach;	
-	} 
-	
-	@GetMapping(value = "/AccountHolders/{id}")
-	public AccountHolder getAccountHolder(@PathVariable("id")long id) {
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		return holder;
 	}
 	
-	@GetMapping(value = "/AccountHolders/{id}/CheckingAccounts")
-	public List<CheckingAccount> getAccountHolderCheckingAccounts(@PathVariable("id")long id) {
+	@GetMapping(value = "/Me/CheckingAccounts")
+	public List<CheckingAccount> getAccountHolderCheckingAccounts() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
+		
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		return holder.getCheckingAccounts();
 	}
 	
-	@PostMapping(value = "/AccountHolders/{id}/CheckingAccounts")
+	@PostMapping(value = "/Me/CheckingAccounts")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CheckingAccount addAccountHolderCheckingAccounts(@PathVariable("id")long id, 
-			@RequestBody @Valid CheckingAccount checkingAccount) {
+	public CheckingAccount addAccountHolderCheckingAccounts(@RequestBody @Valid CheckingAccount checkingAccount) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
+		
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
@@ -86,17 +85,25 @@ private CDOfferingRepository cdOfferingRepository;
 		return checkingAccount;
 	}
 	
-	@GetMapping(value = "/AccountHolders/{id}/SavingsAccounts")
-	public List<SavingsAccount> getAccountHolderSavingsAccounts(@PathVariable("id")long id) {
+	@GetMapping(value = "/Me/SavingsAccounts")
+	public List<SavingsAccount> getAccountHolderSavingsAccounts() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
+		
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		return holder.getSavingsAccounts();
 	}
 	
-	@PostMapping(value = "/AccountHolders/{id}/SavingsAccounts")
+	@PostMapping(value = "/Me/SavingsAccounts")
 	@ResponseStatus(HttpStatus.CREATED)
-	public SavingsAccount addAccountHolderCheckingAccounts(@PathVariable("id")long id, @RequestBody @Valid SavingsAccount savingsAccount) {
+	public SavingsAccount addAccountHolderCheckingAccounts(@RequestBody @Valid SavingsAccount savingsAccount) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
+		
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
@@ -111,17 +118,24 @@ private CDOfferingRepository cdOfferingRepository;
 		return savingsAccount;
 	}
 	
-	@GetMapping(value = "/AccountHolders/{id}/CDAccounts")
-	public List <CDAccount> getAccountHolderCDAccounts(@PathVariable("id")long id) {
+	@GetMapping(value = "/Me/CDAccounts")
+	public List <CDAccount> getAccountHolderCDAccounts() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
+		
 		AccountHolder holder = accountHolderRepository.findById(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		return holder.getCDAccounts();
 	}
 	
-	@PostMapping(value = "/AccountHolders/{id}/CDAccounts")
+	@PostMapping(value = "/Me/CDAccounts")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CDAccount addAccountHolderCDAccounts(@PathVariable("id")long id, @RequestBody @Valid CDAccountHelper cdAccountHelper) {
+	public CDAccount addAccountHolderCDAccounts(@RequestBody @Valid CDAccountHelper cdAccountHelper) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User)authentication.getPrincipal();
+		Long id = currentUser.getAccountHolderId();
 		
 		CDOffering cdo = cdOfferingRepository.findById(cdAccountHelper.getCdOffering().getID());
 		if (cdo == null)
