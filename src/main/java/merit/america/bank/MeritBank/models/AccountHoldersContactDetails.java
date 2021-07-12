@@ -11,7 +11,7 @@ public class AccountHoldersContactDetails {
 	@Column(name = "contactdetails_id")
 	private long id;
 	private String address;
-	private long phoneNumber;
+	private String phone;
 	
 	@OneToOne (cascade = CascadeType.ALL)
 	@JoinColumn(name ="accountholder_id", referencedColumnName = "accountholder_id")
@@ -26,9 +26,9 @@ public class AccountHoldersContactDetails {
 		return this;
 	}
 
-	public long getPhoneNumber() {return phoneNumber;}
-	public AccountHoldersContactDetails setPhoneNumber(long phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public String getPhoneNumber() {return phone;}
+	public AccountHoldersContactDetails setPhoneNumber(String phoneNumber) {
+		this.phone = phoneNumber;
 		return this;
 	}
 	

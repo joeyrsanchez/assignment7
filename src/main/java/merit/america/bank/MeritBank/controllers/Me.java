@@ -12,6 +12,7 @@ import merit.america.bank.MeritBank.models.*;
 import merit.america.bank.MeritBank.repo.AccountHolderRepository;
 import merit.america.bank.MeritBank.repo.AccountHoldersContactDetailsRepository;
 import merit.america.bank.MeritBank.repo.CDOfferingRepository;
+import merit.america.bank.MeritBank.security.MyUserPrincipal;
 import merit.america.bank.MeritBank.repo.BankAccountRepository;
 
 import org.springframework.http.HttpStatus;
@@ -44,10 +45,11 @@ private CDOfferingRepository cdOfferingRepository;
 	@GetMapping(value = "/Me")
 	public AccountHolder getAccountHolder() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User currentUser = (User)authentication.getPrincipal();
-		Long id = currentUser.getAccountHolderId();
+		MyUserPrincipal currentUser = (MyUserPrincipal)authentication.getPrincipal();
+        
+        Long id = currentUser.getId();
 		
-		AccountHolder holder = accountHolderRepository.findById(id);
+		AccountHolder holder = accountHolderRepository.findByUserId(id);
 		if(holder == null)
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
 		return holder;

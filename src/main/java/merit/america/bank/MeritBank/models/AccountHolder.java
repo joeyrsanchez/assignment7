@@ -12,6 +12,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 import merit.america.bank.MeritBank.exceptions.ExceedsCombinedBalanceLimitException;
@@ -33,6 +35,26 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	@NotBlank
 	private String ssn;
 	
+	public AccountHoldersContactDetails getContact() {
+		return contact;
+	}
+
+	public void setContact(AccountHoldersContactDetails contact) {
+		this.contact = contact;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	@OneToOne
+	@JsonIgnore
+	private User user;
+	
 	public long getId() {
 		return id;
 	}
@@ -52,9 +74,11 @@ public class AccountHolder implements Comparable<AccountHolder> {
 			cascade = CascadeType.ALL)
 	private List<CDAccount> cdArray;
 	
-	@OneToOne
+	@OneToOne(
+			mappedBy = "accountHolder",
+			cascade = CascadeType.ALL)
 	@JoinColumn(name = "contactdetails_id", referencedColumnName = "contactdetails_id")
-	private AccountHoldersContactDetails accountHoldersContactDetails;
+	private AccountHoldersContactDetails contact;
 	
 
 	// Constructors
@@ -92,6 +116,11 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
 	// Account GETTERS and SETTERS
 
+	protected String getUserName() {
+		return user.getUsername();
+		
+	}
+	
 	// First name setter & getter
 
 	protected void setFirstName(String firstName) {

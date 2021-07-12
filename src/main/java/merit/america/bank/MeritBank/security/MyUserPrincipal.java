@@ -36,8 +36,8 @@ public class MyUserPrincipal implements UserDetails {
 		return user.getUsername();
 	}
 	
-	public Long getAccountHolderId() {
-		return user.getAccountHolderId();
+	public Long getId() {
+		return user.getId();
 	}
 
 	@Override
